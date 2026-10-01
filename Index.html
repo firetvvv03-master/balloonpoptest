@@ -1102,25 +1102,42 @@
                 }
             });
 
-            if (level >= 15 && !warningTriggeredForLevel15) {
-                warningTriggeredForLevel15 = true;
-                showBossWarningBanner("🔥 LEVEL 15: APOCALYPTIC NEON HYDRA! 💀");
-                setTimeout(() => spawnSpecificBoss('boss_hydra'), 1600);
+            // Neon Hydra: spawns at level 15 and every 45 levels afterward
+            if (level >= 15 && (level - 15) % 45 === 0 && lastHydraSpawnLevel !== level) {
+                lastHydraSpawnLevel = level;
+                let tier = Math.floor((level - 15) / 45) + 1;
+                let scaledHp = Math.floor(100 * Math.pow(1.5, tier - 1));
+                // Lower relative score reward scaling per tier so level doesn't jump too fast
+                let adjustedScoreReward = Math.floor(150 / Math.sqrt(tier)); 
+                showBossWarningBanner(`🔥 LEVEL ${level}: APOCALYPTIC NEON HYDRA (Tier ${tier})! 💀`);
+                setTimeout(() => spawnSpecificBoss('boss_hydra', scaledHp, adjustedScoreReward), 1600);
             }
-            if (level >= 25 && !warningTriggeredForLevel25) {
-                warningTriggeredForLevel25 = true;
-                showBossWarningBanner("🔥 LEVEL 25: COSMIC SINGULARITY OVERLORD! 💀");
-                setTimeout(() => spawnSpecificBoss('boss_singularity'), 1600);
+            // Cosmic Singularity: spawns at level 25 and every 45 levels afterward
+            if (level >= 25 && (level - 25) % 45 === 0 && lastSingularitySpawnLevel !== level) {
+                lastSingularitySpawnLevel = level;
+                let tier = Math.floor((level - 25) / 45) + 1;
+                let scaledHp = Math.floor(150 * Math.pow(1.5, tier - 1));
+                let adjustedScoreReward = Math.floor(200 / Math.sqrt(tier));
+                showBossWarningBanner(`🔥 LEVEL ${level}: COSMIC SINGULARITY (Tier ${tier})! 💀`);
+                setTimeout(() => spawnSpecificBoss('boss_singularity', scaledHp, adjustedScoreReward), 1600);
             }
-            if (level >= 35 && !warningTriggeredForLevel35) {
-                warningTriggeredForLevel35 = true;
-                showBossWarningBanner("🔥 LEVEL 35: NEBULA LEVIATHAN OVERLORD! 💀");
-                setTimeout(() => spawnSpecificBoss('boss_nebula'), 1600);
+            // Nebula Leviathan: spawns at level 35 and every 45 levels afterward
+            if (level >= 35 && (level - 35) % 45 === 0 && lastNebulaSpawnLevel !== level) {
+                lastNebulaSpawnLevel = level;
+                let tier = Math.floor((level - 35) / 45) + 1;
+                let scaledHp = Math.floor(220 * Math.pow(1.5, tier - 1));
+                let adjustedScoreReward = Math.floor(250 / Math.sqrt(tier));
+                showBossWarningBanner(`🔥 LEVEL ${level}: NEBULA LEVIATHAN (Tier ${tier})! 💀`);
+                setTimeout(() => spawnSpecificBoss('boss_nebula', scaledHp, adjustedScoreReward), 1600);
             }
-            if (level >= 45 && !warningTriggeredForLevel45) {
-                warningTriggeredForLevel45 = true;
-                showBossWarningBanner("🔥 LEVEL 45: ASTRAL DREADNOUGHT OMEGA! 💀");
-                setTimeout(() => spawnSpecificBoss('boss_dreadnought'), 1600);
+            // Astral Dreadnought: spawns at level 45 and every 45 levels afterward
+            if (level >= 45 && (level - 45) % 45 === 0 && lastDreadnoughtSpawnLevel !== level) {
+                lastDreadnoughtSpawnLevel = level;
+                let tier = Math.floor((level - 45) / 45) + 1;
+                let scaledHp = Math.floor(300 * Math.pow(1.5, tier - 1));
+                let adjustedScoreReward = Math.floor(350 / Math.sqrt(tier));
+                showBossWarningBanner(`🔥 LEVEL ${level}: ASTRAL DREADNOUGHT (Tier ${tier})! 💀`);
+                setTimeout(() => spawnSpecificBoss('boss_dreadnought', scaledHp, adjustedScoreReward), 1600);
             }
         }
 
@@ -1921,6 +1938,11 @@
             totalBossesDefeated = 0;
             maxCoinsEarnedTracker = 0;
             
+lastHydraSpawnLevel = 0;
+            lastSingularitySpawnLevel = 0;
+            lastNebulaSpawnLevel = 0;
+            lastDreadnoughtSpawnLevel = 0;
+
             pets.forEach(p => p.unlocked = false);
 
             document.getElementById('gameOverOverlay').classList.add('hidden');
