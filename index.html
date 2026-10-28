@@ -338,7 +338,7 @@
                 <span class="text-[10px] arcade-font text-indigo-400 uppercase tracking-wider">⚡ Skills:</span>
                 <div id="activeSkillBar" class="flex items-center gap-1.5 flex-wrap"></div>
             </div>
-            <button onclick="openAchievementsModal(); toggleMenuDropdown();" class="text-left px-3 py-1.5 text-xs hover:bg-slate-800 rounded-lg text-amber-300 arcade-font flex items-center gap-2 cursor-pointer">🏆 Quests & Ach.</button>
+            <button onclick="openAchievementsModal();" class="text-left px-3 py-1.5 text-xs hover:bg-slate-800 rounded-lg text-amber-300 arcade-font flex items-center gap-2 cursor-pointer">🏆 Quests & Ach.</button>
             <div>
                 <button onclick="openShopModal()" class="flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-500 text-white arcade-font px-3 py-1 rounded-xl shadow-lg transition-all border border-indigo-400 active:scale-95 cursor-pointer text-xs">
                     🛒 Shop & Upgrades
@@ -409,7 +409,7 @@
                     
                     <div class="space-y-2 pt-1">
                         <button onclick="reviveWithCoins()" class="w-full bg-amber-600 hover:bg-amber-500 text-white arcade-font py-2.5 rounded-xl shadow-lg transition-all border border-amber-400 cursor-pointer text-xs flex items-center justify-center gap-1.5 font-bold">
-                            🪙 Buy 4 Hearts / Full HP ($5,000 Coins)
+                            🪙 Buy Full HP ($5,000 Coins)
                         </button>
                         <button onclick="reviveWithAd()" class="w-full bg-purple-600 hover:bg-purple-500 text-white arcade-font py-2.5 rounded-xl shadow-lg transition-all border border-purple-400 cursor-pointer text-xs flex items-center justify-center gap-1.5 font-bold">
                             📺 Watch Ad for Full HP Revival!
@@ -435,12 +435,12 @@
             <div class="p-4 overflow-y-auto flex-grow space-y-4 text-xs text-slate-300">
                 <div>
                     <h4 class="text-sm font-bold arcade-font text-indigo-400 uppercase mb-1">🎮 How to Play</h4>
-                    <p class="leading-relaxed">Tap or click any active balloon on screen to throw your piercing needle/projectile at it. Each balloon has an HP pool. Pop them before they float off the top of the screen to avoid taking HP damage. Collect coins, and buy upgrades or pets to conquer endless waves!</p>
+                    <p class="leading-relaxed">Tap or click any active balloon on screen to throw your projectile at it. Pop them before they float off the top of the screen to avoid taking HP damage. Collect coins, buy upgrades, and conquer endless waves!</p>
                 </div>
                 <hr class="border-slate-800">
                 <div>
                     <h4 class="text-sm font-bold arcade-font text-cyan-400 uppercase mb-2">⚡ Weather Cycles & Thunderstorm</h4>
-                    <p class="leading-relaxed mb-2">Dynamic weather changes every 30 seconds! During the **Thunderstorm & Electric Surge** cycle, lightning flashes across the arena, zapping random balloons for heavy damage and boosting your score & coin gain with an Electric Surge!</p>
+                    <p class="leading-relaxed mb-2">Dynamic weather changes every 30 seconds! During the **Thunderstorm & Electric Surge** cycle, lightning flashes across the arena, zapping random balloons for heavy damage.</p>
                 </div>
                 <hr class="border-slate-800">
                 <div>
@@ -480,12 +480,12 @@
                 </div>
 
                 <div>
-                    <h4 class="text-[10px] uppercase arcade-font text-indigo-400 mb-1.5 font-bold tracking-wider">Throwing Hand Skins (Up to 4 Max)</h4>
+                    <h4 class="text-[10px] uppercase arcade-font text-indigo-400 mb-1.5 font-bold tracking-wider">Throwing Hand Skins</h4>
                     <div class="grid grid-cols-2 gap-2" id="handSkinsList"></div>
                 </div>
 
                 <div>
-                    <h4 class="text-[10px] uppercase arcade-font text-indigo-400 mb-1.5 font-bold tracking-wider">Throwing Object Skins (Up to 4 Max)</h4>
+                    <h4 class="text-[10px] uppercase arcade-font text-indigo-400 mb-1.5 font-bold tracking-wider">Throwing Object Skins</h4>
                     <div class="grid grid-cols-2 gap-2" id="objectSkinsList"></div>
                 </div>
 
@@ -516,7 +516,7 @@
             <div class="p-4 overflow-y-auto flex-grow space-y-4">
                 <div class="flex justify-between items-center bg-slate-800/80 p-2.5 rounded-xl border border-slate-700">
                     <div>
-                        <h4 class="text-[10px] uppercase arcade-font text-amber-400 font-bold tracking-wider">Hardcore Daily Quests (5 Active / Refreshes Daily)</h4>
+                        <h4 class="text-[10px] uppercase arcade-font text-amber-400 font-bold tracking-wider">Hardcore Daily Quests</h4>
                         <p class="text-[9px] text-slate-400">Completing quests rewards high coin bonuses!</p>
                     </div>
                     <button onclick="refreshDailyQuestsManual()" class="bg-amber-600 hover:bg-amber-500 text-white arcade-font text-[10px] px-2.5 py-1.5 rounded-lg shadow cursor-pointer">🔄 Refresh Quests</button>
@@ -524,7 +524,7 @@
                 <div id="questsList" class="space-y-2"></div>
 
                 <div>
-                    <h4 class="text-[10px] uppercase arcade-font text-yellow-400 mb-1.5 font-bold tracking-wider">Milestone Achievements (Progressive & Infinite Harder Tiers)</h4>
+                    <h4 class="text-[10px] uppercase arcade-font text-yellow-400 mb-1.5 font-bold tracking-wider">Milestone Achievements</h4>
                     <div id="achievementsList" class="space-y-2"></div>
                 </div>
             </div>
@@ -555,6 +555,7 @@
         let score = parseInt(localStorage.getItem('balloonScore')) || 0;
         let highScore = parseInt(localStorage.getItem('balloonHighScore')) || 0;
         let coins = parseInt(localStorage.getItem('balloonCoins')) || 0;
+        let maxCoinsEarnedTracker = parseInt(localStorage.getItem('balloonMaxCoinsEarned')) || coins;
         let hp = 10;
         const maxHp = 10;
         let level = 1;
@@ -584,6 +585,12 @@
 
         let pendingAdAction = null; 
         let activeMiniGameEvent = null;
+
+        // FIXED: Declare boss spawn level trackers to prevent ReferenceError
+        let lastHydraSpawnLevel = 0;
+        let lastSingularitySpawnLevel = 0;
+        let lastNebulaSpawnLevel = 0;
+        let lastDreadnoughtSpawnLevel = 0;
 
         function toggleMenuDropdown() {
             const dropdown = document.getElementById('menuDropdownContent');
@@ -859,7 +866,6 @@
 
         let totalBalloonsPoppedInRun = 0;
         let totalBossesDefeated = 0;
-        let maxCoinsEarnedTracker = 0;
 
         const pets = [
             { id: 'sparky', name: 'Sparky', title: 'Electro-Sprite', icon: '⚡', desc: 'Zaps a random balloon every 3s', unlocked: false, price: 200, isAd: false },
@@ -1084,11 +1090,6 @@
             });
         }
 
-        let warningTriggeredForLevel15 = false;
-        let warningTriggeredForLevel25 = false;
-        let warningTriggeredForLevel35 = false;
-        let warningTriggeredForLevel45 = false;
-
         function checkLevelMilestones() {
             level = Math.floor(score / 300) + 1;
             document.getElementById('levelDisplay').textContent = level;
@@ -1102,42 +1103,25 @@
                 }
             });
 
-            // Neon Hydra: spawns at level 15 and every 45 levels afterward
             if (level >= 15 && (level - 15) % 45 === 0 && lastHydraSpawnLevel !== level) {
                 lastHydraSpawnLevel = level;
-                let tier = Math.floor((level - 15) / 45) + 1;
-                let scaledHp = Math.floor(100 * Math.pow(1.5, tier - 1));
-                // Lower relative score reward scaling per tier so level doesn't jump too fast
-                let adjustedScoreReward = Math.floor(150 / Math.sqrt(tier)); 
-                showBossWarningBanner(`🔥 LEVEL ${level}: APOCALYPTIC NEON HYDRA (Tier ${tier})! 💀`);
-                setTimeout(() => spawnSpecificBoss('boss_hydra', scaledHp, adjustedScoreReward), 1600);
+                showBossWarningBanner(`🔥 LEVEL ${level}: APOCALYPTIC NEON HYDRA! 💀`);
+                setTimeout(() => spawnSpecificBoss('boss_hydra'), 1600);
             }
-            // Cosmic Singularity: spawns at level 25 and every 45 levels afterward
             if (level >= 25 && (level - 25) % 45 === 0 && lastSingularitySpawnLevel !== level) {
                 lastSingularitySpawnLevel = level;
-                let tier = Math.floor((level - 25) / 45) + 1;
-                let scaledHp = Math.floor(150 * Math.pow(1.5, tier - 1));
-                let adjustedScoreReward = Math.floor(200 / Math.sqrt(tier));
-                showBossWarningBanner(`🔥 LEVEL ${level}: COSMIC SINGULARITY (Tier ${tier})! 💀`);
-                setTimeout(() => spawnSpecificBoss('boss_singularity', scaledHp, adjustedScoreReward), 1600);
+                showBossWarningBanner(`🔥 LEVEL ${level}: COSMIC SINGULARITY OVERLORD! 💀`);
+                setTimeout(() => spawnSpecificBoss('boss_singularity'), 1600);
             }
-            // Nebula Leviathan: spawns at level 35 and every 45 levels afterward
             if (level >= 35 && (level - 35) % 45 === 0 && lastNebulaSpawnLevel !== level) {
                 lastNebulaSpawnLevel = level;
-                let tier = Math.floor((level - 35) / 45) + 1;
-                let scaledHp = Math.floor(220 * Math.pow(1.5, tier - 1));
-                let adjustedScoreReward = Math.floor(250 / Math.sqrt(tier));
-                showBossWarningBanner(`🔥 LEVEL ${level}: NEBULA LEVIATHAN (Tier ${tier})! 💀`);
-                setTimeout(() => spawnSpecificBoss('boss_nebula', scaledHp, adjustedScoreReward), 1600);
+                showBossWarningBanner(`🔥 LEVEL ${level}: NEBULA LEVIATHAN OVERLORD! 💀`);
+                setTimeout(() => spawnSpecificBoss('boss_nebula'), 1600);
             }
-            // Astral Dreadnought: spawns at level 45 and every 45 levels afterward
             if (level >= 45 && (level - 45) % 45 === 0 && lastDreadnoughtSpawnLevel !== level) {
                 lastDreadnoughtSpawnLevel = level;
-                let tier = Math.floor((level - 45) / 45) + 1;
-                let scaledHp = Math.floor(300 * Math.pow(1.5, tier - 1));
-                let adjustedScoreReward = Math.floor(350 / Math.sqrt(tier));
-                showBossWarningBanner(`🔥 LEVEL ${level}: ASTRAL DREADNOUGHT (Tier ${tier})! 💀`);
-                setTimeout(() => spawnSpecificBoss('boss_dreadnought', scaledHp, adjustedScoreReward), 1600);
+                showBossWarningBanner(`🔥 LEVEL ${level}: ASTRAL DREADNOUGHT OMEGA! 💀`);
+                setTimeout(() => spawnSpecificBoss('boss_dreadnought'), 1600);
             }
         }
 
@@ -1640,7 +1624,6 @@
                     });
                 }
 
-                // Explosive Bomb adds coins for other balloons destroyed/damaged
                 const bombBonusCoins = (destroyedCount * 5 + 10) * coinMultiplier;
                 coins += bombBonusCoins;
                 maxCoinsEarnedTracker += bombBonusCoins;
@@ -1650,19 +1633,21 @@
                 playSound('coin');
                 const bonusCoins = 15 * coinMultiplier;
                 coins += bonusCoins;
+                maxCoinsEarnedTracker += bonusCoins;
                 score += typeData.score;
                 showFloatingText(`🎁 MYSTERY! +$${bonusCoins}`, clientX, clientY, "text-pink-300");
             } else if (typeData.freeze) {
                 playSound('freeze');
                 score += typeData.score;
-                coins += 5 * coinMultiplier;
+                const freezeCoins = 5 * coinMultiplier;
+                coins += freezeCoins;
+                maxCoinsEarnedTracker += freezeCoins;
                 showFloatingText(`❄ FREEZE! +${typeData.score}`, clientX, clientY, "text-blue-300");
                 
                 const arena = document.getElementById('gameArena');
                 arena.classList.add('frozen-screen');
                 setTimeout(() => arena.classList.remove('frozen-screen'), 1000);
 
-                // Freeze all other active balloons for exactly 1 second
                 const layer = document.getElementById('balloonLayer');
                 if (layer) {
                     const activeBalloons = layer.querySelectorAll('.absolute.rounded-full');
@@ -1690,7 +1675,9 @@
             } else if (typeData.frenzy) {
                 playSound('laser');
                 score += typeData.score;
-                coins += 15 * coinMultiplier;
+                const frenzyCoins = 15 * coinMultiplier;
+                coins += frenzyCoins;
+                maxCoinsEarnedTracker += frenzyCoins;
                 showFloatingText(`🔥 CHAIN FRENZY! +${typeData.score}`, clientX, clientY, "text-amber-300");
                 
                 const arena = document.getElementById('gameArena');
@@ -1729,9 +1716,6 @@
                 });
 
                 showFloatingText(`+${earnedScore}${currentWeather.id === 'thunderstorm' ? ' ⚡' : ''}`, clientX, clientY, "text-yellow-400");
-                if (typeData.coins) {
-                    playSound('coin');
-                }
             }
 
             checkHighScore();
@@ -1789,6 +1773,7 @@
         function saveGameState() {
             localStorage.setItem('balloonScore', score);
             localStorage.setItem('balloonCoins', coins);
+            localStorage.setItem('balloonMaxCoinsEarned', maxCoinsEarnedTracker);
             localStorage.setItem('balloonHighScore', highScore);
             localStorage.setItem('balloonProjDmg', projectileDamage);
             localStorage.setItem('balloonCoinMult', coinMultiplier);
@@ -1899,9 +1884,10 @@
                     renderActiveSkillBar();
                     useActiveSkill(s.id);
                 };
+                // FIXED: replaced invalid slate-750 with valid slate-700
                 btn.className = `px-2 py-1 rounded-xl border text-[10px] arcade-font flex items-center gap-1 transition-all cursor-pointer ${
                     isSelected ? 'bg-indigo-600 border-indigo-300 text-white shadow-md scale-105' : 
-                    isUnlocked ? 'bg-slate-800 border-slate-700 text-slate-200 hover:bg-slate-750' : 'bg-slate-900 border-slate-800 text-slate-500 opacity-60'
+                    isUnlocked ? 'bg-slate-800 border-slate-700 text-slate-200 hover:bg-slate-700' : 'bg-slate-900 border-slate-800 text-slate-500 opacity-60'
                 }`;
                 btn.innerHTML = `<span>${s.icon}</span> <span>${s.name} ${isUnlocked ? '(Lv.' + s.level + ')' : '(Locked)'}</span>`;
                 bar.appendChild(btn);
@@ -1920,6 +1906,7 @@
             checkHighScore();
             score = 0;
             coins = 0;
+            maxCoinsEarnedTracker = 0;
             hp = 10;
             level = 1;
             projectileDamage = 1;
@@ -1936,9 +1923,8 @@
             activePetIds = [];
             totalBalloonsPoppedInRun = 0;
             totalBossesDefeated = 0;
-            maxCoinsEarnedTracker = 0;
             
-lastHydraSpawnLevel = 0;
+            lastHydraSpawnLevel = 0;
             lastSingularitySpawnLevel = 0;
             lastNebulaSpawnLevel = 0;
             lastDreadnoughtSpawnLevel = 0;
