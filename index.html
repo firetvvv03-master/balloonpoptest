@@ -24,11 +24,14 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: space-between;
+            justify-content: flex-start;
+            gap: 0.35rem;
             overflow: hidden;
             position: fixed;
             width: 100%;
             height: 100%;
+            padding: 0;
+            margin: 0;
         }
         .arcade-font {
             font-family: 'Fredoka', cursive;
@@ -272,7 +275,7 @@
 </head>
 <body>
 
-    <header class="w-full max-w-4xl bg-slate-900/90 backdrop-blur-md border-b border-slate-800 p-2.5 flex flex-wrap justify-between items-center shadow-lg z-10 rounded-b-2xl">
+    <header class="w-full max-w-4xl bg-slate-900/90 backdrop-blur-md border-b border-slate-800 p-2 sm:p-2.5 flex flex-wrap justify-between items-center shadow-lg z-10 rounded-b-2xl shrink-0">
         <div class="flex items-center gap-2">
             <div class="bg-indigo-600 p-1.5 rounded-xl shadow-inner border border-indigo-400">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -330,16 +333,16 @@
         </div>
     </header>
 
-    <main class="relative w-full max-w-4xl flex-grow flex flex-col items-center justify-center p-2 overflow-hidden">
+    <main class="relative w-full max-w-4xl flex-grow flex flex-col items-center justify-start p-1.5 sm:p-2 overflow-hidden gap-1.5 sm:gap-2">
         
         <!-- Skill Bar & Shop/Upgrade Button together -->
-        <div class="w-full bg-slate-900/90 backdrop-blur-md border border-slate-800 p-2 rounded-2xl mb-2 flex flex-wrap items-center justify-between gap-2 shadow-lg z-20">
+        <div class="w-full bg-slate-900/90 backdrop-blur-md border border-slate-800 p-1.5 sm:p-2 rounded-2xl flex flex-wrap items-center justify-between gap-2 shadow-lg z-20 shrink-0">
             <div class="flex items-center gap-2 flex-wrap flex-grow">
                 <span class="text-[10px] arcade-font text-indigo-400 uppercase tracking-wider">⚡ Skills:</span>
                 <div id="activeSkillBar" class="flex items-center gap-1.5 flex-wrap"></div>
             </div>
-            <button onclick="openAchievementsModal();" class="text-left px-3 py-1.5 text-xs hover:bg-slate-800 rounded-lg text-amber-300 arcade-font flex items-center gap-2 cursor-pointer">🏆 Quests & Ach.</button>
-            <div>
+            <div class="flex items-center gap-1.5 ml-auto">
+                <button onclick="openAchievementsModal();" class="text-left px-2.5 py-1 text-xs hover:bg-slate-800 rounded-lg text-amber-300 arcade-font flex items-center gap-1 cursor-pointer">🏆 Quests</button>
                 <button onclick="openShopModal()" class="flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-500 text-white arcade-font px-3 py-1 rounded-xl shadow-lg transition-all border border-indigo-400 active:scale-95 cursor-pointer text-xs">
                     🛒 Shop & Upgrades
                 </button>
@@ -347,7 +350,7 @@
         </div>
 
         <!-- Expanded Arena Height -->
-        <div id="gameArena" class="relative w-full h-[450px] sm:h-[550px] bg-gradient-to-b from-indigo-950 via-slate-900 to-slate-950 rounded-3xl border-2 border-indigo-500/30 shadow-2xl overflow-hidden flex flex-col items-center justify-center select-none transition-all duration-700">
+        <div id="gameArena" class="relative w-full flex-grow min-h-[350px] sm:min-h-[480px] bg-gradient-to-b from-indigo-950 via-slate-900 to-slate-950 rounded-3xl border-2 border-indigo-500/30 shadow-2xl overflow-hidden flex flex-col items-center justify-center select-none transition-all duration-700">
             
             <div class="absolute inset-0 pointer-events-none opacity-20 bg-[radial-gradient(#6366f1_1px,transparent_1px)] [background-size:24px_24px]"></div>
 
@@ -586,7 +589,6 @@
         let pendingAdAction = null; 
         let activeMiniGameEvent = null;
 
-        // FIXED: Declare boss spawn level trackers to prevent ReferenceError
         let lastHydraSpawnLevel = 0;
         let lastSingularitySpawnLevel = 0;
         let lastNebulaSpawnLevel = 0;
@@ -1370,13 +1372,16 @@
             layer.appendChild(balloon);
 
             let speedMultiplier = (selectedType.speedMult || 1.0) * 0.85;
-            speedMultiplier *= currentWeather.speedMod;
+            // Prevent speedMod or Chrono Rift from making speedMultiplier 0 or negative
+            speedMultiplier *= Math.max(0.01, currentWeather.speedMod || 1.0);
 
             if (skillChronoRiftLevel > 0) {
-                speedMultiplier *= (1 - (skillChronoRiftLevel * 0.12));
+                speedMultiplier *= Math.max(0.1, 1 - (skillChronoRiftLevel * 0.12));
             }
 
-            const duration = speedMultiplier === 0 ? 9999 : (Math.random() * 4 + 8) / Math.max(0.2, speedMultiplier); 
+            // Ensure duration is always a valid positive number
+            let rawDuration = (Math.random() * 4 + 8) / Math.max(0.1, speedMultiplier);
+            const duration = (isNaN(rawDuration) || rawDuration <= 0 || !isFinite(rawDuration)) ? 10 : rawDuration; 
             
             const animation = balloon.animate([
                 { transform: `translateY(0px)` },
@@ -1884,7 +1889,6 @@
                     renderActiveSkillBar();
                     useActiveSkill(s.id);
                 };
-                // FIXED: replaced invalid slate-750 with valid slate-700
                 btn.className = `px-2 py-1 rounded-xl border text-[10px] arcade-font flex items-center gap-1 transition-all cursor-pointer ${
                     isSelected ? 'bg-indigo-600 border-indigo-300 text-white shadow-md scale-105' : 
                     isUnlocked ? 'bg-slate-800 border-slate-700 text-slate-200 hover:bg-slate-700' : 'bg-slate-900 border-slate-800 text-slate-500 opacity-60'
@@ -2161,7 +2165,7 @@
             const t = themes.find(th => th.id === themeId);
             const arena = document.getElementById('gameArena');
             if (t && arena) {
-                arena.className = `relative w-full h-[450px] sm:h-[550px] ${t.gradient} rounded-3xl border-2 ${t.border} shadow-2xl overflow-hidden flex flex-col items-center justify-center select-none transition-all duration-700`;
+                arena.className = `relative w-full flex-grow min-h-[350px] sm:min-h-[480px] ${t.gradient} rounded-3xl border-2 ${t.border} shadow-2xl overflow-hidden flex flex-col items-center justify-center select-none transition-all duration-700`;
             }
         }
 
